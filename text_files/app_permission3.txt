@@ -1,0 +1,442 @@
+Dynamic Permissions based Android Malware Detection
+using Machine Learning Techniques
+Arvind Mahindru∗
+Department of Computer Science & Applications
+D.A.V. University
+Sarmastpur 144012, Jalandhar
+er.arvindmahindru@gmail.comParamvir Singh
+Department of Computer Science & Engineering
+Dr. B.R. Ambedkar National Institute of
+Technology, Jalandhar 144001
+singhpv@nitj.ac.in
+ABSTRACT
+Android is by far the most widely used mobile phone oper-
+ating system around. However, Android based applications
+are highly vulnerable to various types of malware attacks
+attributed to their open nature and high popularity in the
+market. The fault lies in the underneath permission model of
+Android applications. These applications need a number of
+sensitive permissions during their installation and runtime,
+which enables possible security breaches by malware. The
+contributions of this paper are twofold: 1) We extract a set
+of 123 dynamic permissions from 11000 Android applications
+in a largest publicly available dataset till date; 2) We eval-
+uate a number of machine learning classiﬁcation techniques
+including Naive Bayes (NB), Decision Tree (J48), Random
+Forest (RF), Simple Logistic (SL), and k-star on the newly
+designed dataset for detecting malicious Android applica-
+tions. The experimental results indicate that although the
+malware classiﬁcation accuracy of RF, J48, and SL are com-
+parable, SL performs marginally better than the other tech-
+niques.
+Keywords
+Android; Malware Detection; Machine Learning; Dynamic
+Analysis
+1. INTRODUCTION
+Mobile phones with advance computing capabilities and
+better connectivity than regular mobile phones, came into
+the market in late 90’s, but gained popularity with the in-
+troduction of Android operating system. Android is cur-
+rently the most popular smartphone platform which occu-
+pied 86.2% of global sale by the end of ﬁrst half of 2016 [26].
+Google launched 20 versions of Android operating system
+from the year 2008 to year 2016 in the market. However,
+the most popular version of Android is 4.4 (kitkat), which
+∗Corresponding Author
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed
+for proﬁt or commercial advantage and that copies bear this notice and the full cita-
+tion on the ﬁrst page. Copyrights for components of this work owned by others than
+ACM must be honored. Abstracting with credit is permitted. To copy otherwise, or re-
+publish, to post on servers or to redistribute to lists, requires prior speciﬁc permission
+and/or a fee. Request permissions from permissions@acm.org.
+ISEC ’17, February 05-07, 2017, Jaipur, India
+c⃝2017 ACM. ISBN 978-1-4503-4856-0/17/02. . . $15.00
+DOI:http://dx.doi.org/10.1145/3021460.3021485covers globally the share of 32.5% of smartphones running
+in the market [28]. By the end of June 2016, 2.2 million
+applications are available in Android market [29] and more
+than one million of these applications are used by smart-
+phone users. With the popularity of Android applications,
+it can also invite cyber criminals to develop malicious ap-
+plications that can steal information from the smartphones.
+According to a study in [27], G DATA security expert an-
+alyzed 1,723,265 new malware samples in the ﬁrst half of
+2016. This is an increase of 29% as compared to the second
+half of 2015. It means that in every nine seconds, a new mali-
+cious application is being introduced in the Android market.
+These applications are created to launch diﬀerent types of
+attacks in the form of trojans, backdoor, worms, botnet and
+spyware. The data presented in [16] shows that there is an
+average increase from 39 to 50 malware variants per family
+from April 2015 to March 2016.
+Android systems have a permissions based mechanism to
+enforce security restrictions on applications. The installa-
+tion and start-up of an Android application requires a num-
+ber of permissions like read contacts, internet access, enable
+or disable application components etc. The installer package
+shows the lists of permissions where a user can allow or deny
+these permissions. When a user sets the permission then it
+can easily access the lier derived techniques with their accuracy
+Technique Goal Description Methodology Data set Accuracy
+Drebin [1] Detection Gathering as many features Static 123,453N 94%
+of an application as possible 5560M
+Androsimilar [8] Detection Extracting Statistically Static 7324N 99.4% for Google Play
+improbable features 1260M apps & 99.89% for 3rd
+party apps
+PUMA [14] Detection Permission Usage to detect Dynamic 239M 86.30%
+Malware in Android
+Andromaly [15] Detection Host based malware Dynamic 4M 100% for self-
+detection system written malware
+DroidMat [19] Detection Android Malware Detection Static 1500N 97.87%
+through API calls 238M
+Here “N” means normal permissions and “M” means malware permissions
+•A dataset comprising installation and start-up (dy-
+namic) time permissions extracted from 11,000 nor-
+mal and malware Android application packages ( .apk)
+collected from multiple sources.
+•Evaluation of the constructed dataset using a set of
+ﬁve machine learning classiﬁcation techniques.
+Rest of the paper is summarized as follows. Section 2
+describes the related work. In Section 3 we describe our
+experimental methodology. Section 4 contains the evalua-
+tion of data set. Section 5 contains the discussion on the
+comparison of our methodology with the existing method-
+ology. Section 6 distinguishes threats to validity. Section 7
+describes the future scope and conclusion.
+2. RELATED WORK
+There are a number of approaches proposed for malware
+detection based on static, dynamic and hybrid analysis. Chin
+et al. [4] proposed Comdroid for detecting application com-
+munication based vulnerabilities in Android. Grace et al.
+[12] proposed a proactive scheme to spot zero-day Android
+malware. Fuchs et al. [9] proposed ScanDroid technique
+which analyzes the data policies in an application manifest
+and data ﬂows across content providers. Barrera et al. [2]
+proposed a methodology for identifying application clusters
+based on requested permissions at their installation time.
+Zhou et al. [24] proposed a permission based behavioral
+approach to detect the malware.
+Zhao et al. [22] suggested AntiMalDroid to detect android
+malware, that uses behaviour sequence as the feature. Enck
+et al. [10] proposed TaintDroid technique, which is used to
+detect the features like tracking of variables, methods and
+ﬁles used by the malware. Burguera et al. [3] presented
+a clustering technique named Crowdroid to detect the mal-
+ware. Dini et al. [5] proposed MADAM, which uses the
+dynamic approach with detection at both kernel and user
+levels. Wu et al. [20] proposed, DroidDolphin approach to
+create log ﬁles and extract information from it to protect
+them from malware. A VM based dynamic system call-
+centric analysis and stimulation technique called Copper-
+Droid is proposed in [17]. Shabtai et al. [15] proposed An-
+dromaly that recognize a host based malware detection sys-
+tem that continuously monitors various features and events
+obtained from the mobile device and then applies anomalyTable 2: Categories of Android application packages
+(.apk )
+Category N TBWBO SP
+Arcade and Action 280 220 50 102 60 58
+Books and Reference 58 90 78 85 156 72
+Brain and Puzzle 192 82 154 10 125 120
+Business 176 152 89 56 14 35
+Cards and Casino 299 76 65 81 35 42
+Casual 325 321 69 46 50 50
+Comics 295 65 95 35 18 0
+Communication 325 52 50 50 50 50
+Education 265 56 89 65 0 35
+Entertainment 198 0225 120 21 60
+Finance 125 5200 99 65 36
+Health and Fitness 325 98 65 45 0 0
+Libraries and Demo 89 98 65 89 65 103
+Lifestyle 100 155 200 100 0 0
+Media and Video 100 100 123 162 0 58
+Medical 100 123 135 125 0 25
+Music and Audio 322 65 0 65 0 0
+News and Magazines 37 0 0 0 0 0
+Personalization 400 0 42 25 25 0
+Photography 18 5 12 0 0 0
+Productivity 0100 16 0 0 0
+Racing 0 50 10 21 0 0
+Shopping 0 0 0 20 13 0
+Social 0 0 50 20 0 0
+Sports 0 0 24 0 0 0
+Sports Games 0 0 45 45 0 0
+Tools 0120 30 5 5 0
+Transportation 0 2 2 0 1 0
+Travel and Local 0 0 22 0 41 1
+Weather 0 12 23 0 0 0
+Here, “N” means Normal, “T” means Trojan, “B” means
+Backdoor, “W” means Worms, “BO” means Botnet, and
+“SP” means Spyware
+203Figure 1: Proposed Methodology
+detectors to classify the collected data
+applicable to a wide range of scenarios. In this work, we con-
+struct a dataset of the most recently launched 11,000 nor-
+mal and malware applications, and apply various machine
+learning algorithms to evaluate its eﬀectiveness in identify-
+ing malware applications.
+3. EXPERIMENTAL METHODOLOGY
+The experimental methodology presented in this paper
+is divided into three phases as shown in Figure 1. In theﬁrst phase, the android application packages ( .apk) are col-
+lected from diﬀerent sources. In the second phase, dynamic
+analysis is performed on these collected Android applica-
+tion packages ( .apk) and the permissions which are used by
+these applications during their installations and start-up are
+collected to form our data set. In the last phase, we evalu-
+ate our data set by implementing various machine learning
+algorithms.
+3.1 Collection of (.apk )
+In the ﬁrst phase of our methodology, we collect 13,000
+unique Android application packages ( .apk) comprising of
+6029 normal Android application packages ( .apk) from ap-
+pchina [34], hiapk [35], android [36], mumayi [37], gfan [38],
+pandaapp [39], slideme [40] and 6971 malicious applications
+from diﬀerent sources such as Android Botnet data set [7],
+DroidKin data set [11], Android Malware Genome Project
+[23] and AndroMalShare [33]. The considered normal ap-
+plications were launched in Feb. 2014 to Feb. 2016 and
+the malware applications were introduced in between March
+2014 to March 2016. The malicious applications come from
+diﬀerent malware families such as trojan, backdoor, worm,
+botnet and spyware. The collected Android application pack-
+ages( .apk) are categorized in 29 diﬀerent categories as shown
+in Table 2.
+3.2 Extract Permissions from collected (.apk )
+We run these collected Android application packages ( .apk)
+with the help of emulator bluestack [41]. Further, we extract
+permissions by running a java code and made our data set.
+Example of extracted permissions are given below:
+uses-permission: android.permission.READ_CALENDER_EVENT
+uses-permission: android.permission.WRITE_CONTACTS
+By applying dynamic analysis on collected 13,000 Android
+application packages ( .apk), we discard the ones that were
+204Table 3: Safe permissions with apps count
+Safe permissions with their ﬁeld # apps
+D: access DRM content 8
+D: access email provider data 9
+D: access all system downloads 3
+D: access download manager 7
+D: advanced download manager functions 1
+D: install DRM content 14
+D: modify Google service conﬁguration 2
+D: modify Google settings 2
+D: move application resources 1
+D: read Google settings 3
+D: send download notiﬁcations 5
+D: voice search shortcuts 2
+D: access surface ﬂinger 7
+D: access checkin properties 7
+D: access the cache ﬁle system 1
+D: act as an account authenticator 5
+D: bind to a wallpaper 17
+D: bind to an input method 2
+D: change screen orientation 32
+D: control system backup and restore 3
+D: delete applications 11
+D: delete other applications caches 12
+D: delete other applications data 13
+D: directly call any phone numbers 56
+D: directly install applications 43
+D: disable or modify status bar 20
+D: display unauthorized windows 5
+D: enable or disable application components 11
+D: force application to close 2
+D: force device reboot 12
+D: full Internet access 68
+D: interact with a device admin 4
+D: manage application tokens 1
+D: modify battery statistics 65
+D: modify secure system settings 57
+D: modify the Google services map 1
+D: monitor and control all application launching 35
+D: partial shutdown 1
+D: permanently disable device 5
+D: power device on or oﬀ 5
+D: press keys and control buttons 6
+D: prevent app switches 5
+D: read frame buﬀer 5
+NC: control near ﬁeld communication 12
+NC: create bluetooth connections 220
+NC: download ﬁles without notiﬁcation 5
+NC: receive data from Internet 389Table 4: Dangerous permissions with apps count
+Dangerous permissions with their ﬁeld # apps
+D: Audio File Access 3
+D: access to passwords for Google accounts 5
+D: coarse (network-based) location 5
+D: control location update notiﬁcations 18
+D: discover known accounts 5
+D: mock location sources for testing 10
+D: modify/delete USB storage contents 10
+modify/delete SD card contents
+D: permission to install a location provider 4
+D: read phone state and identity 1
+D: write contact data 10
+HC: record audio 471
+NC: full Internet access 9017
+NC: make/receive Internet calls 3
+NC: view Wi-Fi state 1438
+NC: view network state 6880
+PC: intercept outgoing calls 100
+PC: modify phone state 100
+PC: read phone state and identity 4368
+SCM: directly call phone numbers 625
+SCM: send SMS messages 337
+S: modify/delete USB storage contents 4337
+modify/delete SD card contents
+ST: change Wi-Fi state 235
+ST: format external storage 4
+YA: Blogger 50
+YA: Google app engine 100
+YA: Google docs 100
+YA: Google ﬁnance 100
+YA: Google maps 100
+YA: Google spreadsheets 100
+YA: Google voice 100
+YA: Google mail 2
+YA: Picasa web albums 100
+YA: YouTube 100
+YA: YouTube usernames 100
+YA: access all Google services 100
+YA: access other Google services 100
+YA: act as an account authenticator 7
+YA: act as the Account manager service 4
+YA: contacts data in Google accounts 10
+YA: discover known accounts 27
+YA: manage the accounts list 11
+YA: read Google service conﬁguration 10
+YA: use the authentication 2
+credentials of an account
+YA: view conﬁgured accounts 1
+YL: access extra location provider commands 5
+YL: coarse (network-based) location 20
+YL: ﬁne (GPS) location 23
+YL: mock location sources for testing 3
+YM : edit SMS or MMS 8
+YM : read SMS or MMS 10
+YM: receive SMS 15
+YM: receive WAP 1
+YM: send SMS-received broadcast 1
+YPI: add or modify calendar events 7
+and send email to guests
+YPI: read calendar events 1
+YPI: read contact data 24
+HC: write contact data 18
+205Table 5: Machine Learning Classiﬁers used in the
+experiment.
+Algorithms Conﬁguration
+Naive Bayes (NB) N/A
+Decision Tree (J48) Size of tree=19
+Random Forest (RF) 8 random features
+Simple Logistic Number of classes =2
+k-star k=1
+either not installed or do not start from their launch menu.
+From rest of the Android application packages( .apk) we col-
+lect 123 unique permissions which these applications require.
+By collecting these permissions, we construct our data set of
+11,000 unique applications. Before moving to the implemen-
+tation phase, we divide these 123 permissions into safe and
+unsafe states. These safe and unsafe permissions [30, 31, 32]
+are mentioned in Tables 3 and 4 respectively. In Table 3
+and 4 we divide the ﬁeld in which Android applications re-
+quire permissions at installation time and start-up. In these
+tables, “D” stands for Default permissions, “DT” stands for
+Development tools, “HC” stands for Hardware control, “NC”
+stands for Network communications, “PC” stands for Phone
+calls, “SCM” Services that costs money, “S” stands for stor-
+age, “ST” stands for System tools, “YA” stands for Your
+accounts, “YM” stands for Your messages and “YPI” stands
+for Your personal information. Default permissions are the
+ones which the Android applications require at their instal-
+lation time, Development tools, Hardware control, Network
+communications, Phone calls, Services that costs money and
+Your messages are the permissions which Android applica-
+tions require at their start-up and Storage, System tools,
+Your accounts and Your personal information are the per-
+missions that are required by the Android applications at
+their installation time and start-up.
+3.3 Machine Learning Phase
+We evaluate our data set by using ﬁve machine learning
+classiﬁer techniques which are: Naive Bayes (NB), Decision
+Tree (J48), Random Forest (RF), Simple Logistic and k-star.
+The ﬁve classiﬁers with their conﬁguration which is used in
+our experiments are shown in Table 5.
+Naive Bayes: This technique uses the method of con-
+ditional independence assumption in which training phase
+require considering each attribute in each class separately
+and in testing phase it calculate conditional probability with
+estimate distribution.
+Decision Tree: This uses the method of discrete value tar-
+get function, in which the learned function is represented as
+a set of if-then rules. Decision Tree consists of nodes that
+form a rooted tree, with a node called root. A node with
+outgoing is called a test node. In our experiment we con-
+sider the size of trees 19.
+Random Forest: RF consists of a collection of tree struc-
+tured classiﬁer{h(X, Θk), k= 1, 2,3, . . .}, where the{Θk}
+are independent identically distributed random vector and
+each tree cast a vote for the most popular class at input X.
+In our experiment we consider 8 random features.
+Simple Logistic: It can interpret prediction of class mem-
+bership. By applying class assignment threshold probability.
+In our experiment we consider number of classes 2.Table 6: Testing of training and supply data set with
+all classiﬁers
+Techniques TPR FPR Prec. Recall F-Measure
+Naive Bayes 0.987 0.007 0.988 0.987 0.987
+J48 0.996 0.003 0.996 0.996 0.996
+Random Forest 0.996 0.002 0.996 0.996 0.996
+Simple Logistic 0.997 0.002 0.997 0.997 0.997
+k-star 0.952 0.028 0.957 0.952 0.952
+Table 7: Testing during cross validation of data set
+with all classiﬁers
+Techniques TPR FPR Prec. Recall F-Measure
+Naive Bayes 0.984 0.009 0.985 0.984 0.984
+J48 0.996 0.003 0.996 0.996 0.996
+Random Forest 0.996 0.003 0.996 0.996 0.996
+Simple Logistic 0.996 0.003 0.997 0.996 0.996
+k-star 0.952 0.028 0.957 0.952 0.952
+k-star: k-star is a lazy learning method in which general-
+ization beyond the training data is delayed until a query is
+made to the system, as opposed to an eager learning, where
+the system tries to generalize the training data before re-
+ceiving queries. In our experiment we consider k=1.
+4. EVALUATION OF DATA SET
+In order to achieve the accuracy as high as possible, we
+test our data set in WEKA [42] by using three diﬀerent op-
+tions available in it. First option is supply training set and
+then evaluate the test set, the second is cross-validation and
+third is splitting the data set on the percentage basis. In the
+following subsection, we deﬁne the parameters True Positive
+Rate, False Positive Rate, Precision, F-measure and accu-
+racy. To show the eﬀectiveness of our approach, we shall
+evaluate each parameter for all the ﬁve 
+Techniques TPR FPR Prec. Recall F-Measure
+Naive Bayes 0.987 0.007 0.988 0.987 0.987
+J48 0.997 0.002 0.997 0.997 0.997
+Random Forest 0.997 0.002 0.997 0.997 0.997
+Simple Logistic 0.997 0.002 0.997 0.997 0.997
+k-star 0.952 0.028 0.958 0.952 0.953
+206True Positive Rate: It measures the proportion of pos-
+itives that are correctly identiﬁed and is given by
+TruePositiveRate (TPR ) =TP
+TP+FN
+False Positive Rate: It measures the proportion of neg-
+atives that are correctly identiﬁed and is deﬁned as
+FalsePositiveRate (FPR ) =FP
+TN+FP
+Precision: The proportion of the actual malicious apps
+are correctly classiﬁed to the total of all apps that are clas-
+siﬁed as malicious.
+Precision (Prec) =TP
+TP+FP
+Recall Rate: The proportion of the malicious apps that
+are classiﬁed correctly to the total number of the malicious
+that are classiﬁed correctly as malicious or incorrectly as
+benign.
+RecallRate =TP
+TP+FN
+F-measure: The harmonic mean of precision and recall.
+This value tells how much the model is discriminative.
+F−measure =2×Recall×Precision
+Recall +Precision
+Accuracy: The proportion of the total number of the
+apps that are correctly classiﬁed whether as benign or ma-
+licious.
