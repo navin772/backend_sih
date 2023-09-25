@@ -20,10 +20,10 @@
 import requests
 
 # Define the API endpoint
-url = 'http://127.0.0.1:5000/store_minhash'
+url = 'http://127.0.0.1:5000/plag_score'
 
 # Specify the PDF file you want to send
-files = {'pdf_file': ('shyong2020.pdf', open('shyong2020.pdf', 'rb'))}
+files = {'pdf_file': ('app_permission.pdf', open('app_permission.pdf', 'rb'))}
 
 # Make a POST request with the PDF file
 response = requests.post(url, files=files)
