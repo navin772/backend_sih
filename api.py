@@ -75,10 +75,18 @@ client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client["minhash_db"] 
 collection = db["minhash_collection"] 
 
+# Create an index on the 'minhash' field
+collection.create_index([("minhash", pymongo.ASCENDING)])
+
+def find_first_occurrence(scores):
+    for key in sorted(scores.keys(), reverse=True):
+        if scores[key]:
+            return key
+    return None
+
 @app.route('/store_minhash', methods=['POST'])
 def store_minhash():
     try:
-        
         if 'pdf_file' not in request.files:
             return jsonify({"error": "No PDF file provided"}), 400
 
@@ -97,15 +105,20 @@ def store_minhash():
             for word in words:
                 m.update(word.encode('utf8'))
 
-        # Store the MinHash in MongoDB
-        result = collection.insert_one({"minhash": m.digest()})
+        # Convert the NumPy array to a Python list
+        minhash_list = m.digest().tolist()
+
+        # Store the MinHash list in MongoDB
+        result = collection.insert_one({"minhash": minhash_list})
 
         return jsonify({"message": "MinHash stored successfully", "minhash_id": str(result.inserted_id)})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
 
-@app.route('/calculate_similarity', methods=['POST'])
+
+@app.route('/plag_score', methods=['POST'])
 def calculate_similarity():
     try:
         # Check if the 'pdf_file' key is in the request's files
@@ -127,7 +140,7 @@ def calculate_similarity():
             for word in words:
                 m1.update(word.encode('utf8'))
 
-        i = 0.02
+        i = 0.1
         similarity_scores = {}
 
         while i < 0.99:
@@ -141,15 +154,18 @@ def calculate_similarity():
                 minhash = document["minhash"]
                 lsh.insert(minhash_id, MinHash(num_perm=128, hashvalues=minhash))
 
-            # Query for similarity
+            # Query for similarity by counting the number of matches
             result = lsh.query(m1)
-            similarity_scores[threshold] = len(result)
+            similarity_scores[threshold] = result
             i += 0.01
 
-        return jsonify(similarity_scores)
+        score = {"plag_score": round(find_first_occurrence(similarity_scores)*100)}
+        return jsonify(score)
+        # return jsonify(round(find_first_occurrence(similarity_scores)*100))
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)
